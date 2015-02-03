@@ -183,10 +183,10 @@ void Display()
     // translate in and out
     glTranslated(cam.Translate.X, cam.Translate.Y, cam.Translate.Z);
 	
-    // rotate left and right
+    // rotate up and down
 	glRotated(cam.RotateAngleX, cam.RotateX.X, cam.RotateX.Y, cam.RotateX.Z);
 	
-	// rotate up and down
+	// rotate left and right
 	glRotated(cam.RotateAngleY, cam.RotateY.X, cam.RotateY.Y, cam.RotateY.Z);
 
     DrawTeapot();
