@@ -221,12 +221,9 @@ void Keyboard(unsigned char key, int x, int y)
 			switch (teapot.TextureType)
 			{
 				case CHECKERS: teapot.LoadTexture("textures/checkers.ppm"); break;
+				case WOOD: teapot.LoadTexture("textures/wood.ppm"); break;
 				case BRICK: teapot.LoadTexture("textures/brick.ppm"); break;
 				case METAL: teapot.LoadTexture("textures/metal.ppm"); break;
-				case CERAMIC: teapot.LoadTexture("textures/ceramic.ppm"); break;
-				case SKY: teapot.LoadTexture("textures/sky.ppm"); break;
-				case LIGHTWOOD: teapot.LoadTexture("textures/lightwood.ppm"); break;
-				case DARKWOOD: teapot.LoadTexture("textures/darkwood.ppm"); break;
 			}
 			break;
 		// set environment mode

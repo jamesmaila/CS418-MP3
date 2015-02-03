@@ -20,7 +20,7 @@ Camera::Camera()
     RotateX = Vector(1.0, 0.0, 0.0);
     RotateY = Vector(0.0, 1.0, 0.0);
 
-    RotateAngleX = 0.0;
+    RotateAngleX = 20.0;
     RotateAngleY = 0.0;
 }
 
