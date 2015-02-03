@@ -25,6 +25,8 @@ Model::Model(const char * objPath)
 {
 	Mode = NO_TEXTURE;
 
+	Lighting = true;
+
 	if (!LoadObject(objPath)) { cout << "Could not load object file."; }
 }
 

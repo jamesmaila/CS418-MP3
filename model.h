@@ -35,6 +35,7 @@ class Model
    		int Mode;
    		int TextureType;
         int EnvironmentType;
+        bool Lighting;
 
     	Model();
         Model(const char * objPath);

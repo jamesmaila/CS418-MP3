@@ -43,18 +43,6 @@ void Initialize()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	// lighting and shadows
-	GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat lpos[] = { 12.0, 12.0, 12.0, 0.0 };
-
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-	glLightfv(GL_LIGHT0, GL_POSITION, lpos);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, white);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
-	
 	// enable z-buffer
 	glEnable(GL_DEPTH_TEST);
 }
@@ -124,6 +112,27 @@ void DrawTeapot()
 	else
 	{
 		glDisable(GL_TEXTURE_2D);
+	}
+
+	if (teapot.Lighting == true)
+	{
+		// lighting and shadows
+		GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat lpos[] = { 12.0, 12.0, 12.0, 0.0 };
+
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+
+		glLightfv(GL_LIGHT0, GL_POSITION, lpos);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, white);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+	
+	}
+	else
+	{
+		glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHT0);
 	}
 
 	glColor3f(1.0, 1.0, 1.0);
@@ -212,6 +221,8 @@ void Keyboard(unsigned char key, int x, int y)
 		case 'e': cam.Translate.Z += 0.25; break;
 		// move backwards along z-axis
 		case 'q': cam.Translate.Z -= 0.25; break;
+		// toggle lighting
+		case 'l': teapot.Lighting = !teapot.Lighting; break;
 		// set no texture mode
 		case '1': teapot.Mode = NO_TEXTURE; break;
 		// set texture mode, also iterates through availble textures
