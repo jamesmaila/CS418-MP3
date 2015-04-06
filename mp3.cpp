@@ -118,7 +118,7 @@ void DrawTeapot()
 	{
 		// lighting and shadows
 		GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat lpos[] = { 12.0, 12.0, 12.0, 0.0 };
+		GLfloat lpos[] = { 0.0, 20.0, 10.0, 0.0 };
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
