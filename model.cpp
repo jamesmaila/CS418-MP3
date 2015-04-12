@@ -32,7 +32,7 @@ Model::Model(const char * objPath)
 
 /*
  * PopulateFaceNormals
- *     Inputs: None.
+ *     Inputs: None.e
  *     Outputs: None.
  *     Description: Populates face normal list.
  */
@@ -257,3 +257,5 @@ bool Model::LoadEnvironment(const char * path)
 
     return true;
 }
+
+

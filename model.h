@@ -10,16 +10,7 @@
 #define NO_TEXTURE 0
 #define TEXTURE 1
 #define ENVIRONMENT 2
-
-#define NUM_TEXTURES 4
-#define CHECKERS 0
-#define WOOD 1
-#define BRICK 2
-#define METAL 3
-
-
-#define NUM_ENVIRONMENTS 1
-
+#define BOTH 3
 
 class Model
 {

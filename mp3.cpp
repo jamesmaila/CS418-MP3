@@ -103,7 +103,37 @@ void GetVertexCoordsAndNormals(
  */
 void DrawTeapot()
 {
-	if (teapot.Mode == TEXTURE || teapot.Mode == ENVIRONMENT)
+
+	glColor3f(1.0, 1.0, 1.0);
+	glBegin(GL_TRIANGLES);
+		for (unsigned int i=0; i<teapot.Faces.size(); i++)
+		{
+			Face currFace = teapot.Faces[i];
+			float x, y, z;
+			float xn, yn, zn;
+
+			// call glVertex on all three points for each face
+			for (int point=POINT_A; point<=POINT_C; point++)
+			{
+				GetVertexCoordsAndNormals(point, currFace, x, y, z, xn, yn, zn);
+				glNormal3d(xn, yn, zn);
+				if (teapot.Mode == TEXTURE || teapot.Mode == ENVIRONMENT || teapot.Mode == BOTH)
+				{
+					float theta = atan2(z, x);
+					glTexCoord2f((theta + PI)/(2*PI), y/2.0);
+				}
+				glVertex3d(x, y, z);
+			}
+		}
+	glEnd();
+
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+} 
+
+void Lights()
+{
+    if (teapot.Mode == TEXTURE || teapot.Mode == ENVIRONMENT || teapot.Mode == BOTH)
 	{
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_TEXTURE_GEN_S);
@@ -118,7 +148,7 @@ void DrawTeapot()
 	{
 		// lighting and shadows
 		GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat lpos[] = { 0.0, 20.0, 10.0, 0.0 };
+		GLfloat lpos[] = { 10.0, 0.0, 10.0, 0.0 };
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
@@ -134,34 +164,8 @@ void DrawTeapot()
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 	}
+}
 
-	glColor3f(1.0, 1.0, 1.0);
-	glBegin(GL_TRIANGLES);
-		for (unsigned int i=0; i<teapot.Faces.size(); i++)
-		{
-			Face currFace = teapot.Faces[i];
-			float x, y, z;
-			float xn, yn, zn;
-
-			// call glVertex on all three points for each face
-			for (int point=POINT_A; point<=POINT_C; point++)
-			{
-				GetVertexCoordsAndNormals(point, currFace, x, y, z, xn, yn, zn);
-				glNormal3d(xn, yn, zn);
-				glVertex3d(x, y, z);
-
-				if (teapot.Mode == TEXTURE || teapot.Mode == ENVIRONMENT)
-				{
-					float theta = atan2(z, x);
-					glTexCoord2f((theta + PI)/(2*PI), y/2.0);
-				}
-			}
-		}
-	glEnd();
-
-	glDisable(GL_TEXTURE_GEN_S);
-	glDisable(GL_TEXTURE_GEN_T);
-} 
 
 /*
  * Display
@@ -175,6 +179,8 @@ void Display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    Lights();
 
     gluLookAt(cam.Eye.X, cam.Eye.Y, cam.Eye.Z, 
     		  cam.Center.X, cam.Center.Y, cam.Center.Z, 
@@ -228,19 +234,11 @@ void Keyboard(unsigned char key, int x, int y)
 		// set texture mode, also iterates through availble textures
 		case '2': 
 			teapot.Mode = TEXTURE;
-			teapot.TextureType = (teapot.TextureType + 1) % NUM_TEXTURES;
-			switch (teapot.TextureType)
-			{
-				case CHECKERS: teapot.LoadTexture("textures/checkers.ppm"); break;
-				case WOOD: teapot.LoadTexture("textures/wood.ppm"); break;
-				case BRICK: teapot.LoadTexture("textures/brick.ppm"); break;
-				case METAL: teapot.LoadTexture("textures/metal.ppm"); break;
-			}
+			teapot.LoadTexture("textures/wood.ppm"); 
 			break;
 		// set environment mode
 		case '3': 
 			teapot.Mode = ENVIRONMENT;
-			teapot.EnvironmentType = (teapot.EnvironmentType + 1) % NUM_TEXTURES;
 			teapot.LoadEnvironment("textures/environment.ppm");
 			break;
 		// exit
