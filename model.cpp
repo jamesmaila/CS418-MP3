@@ -23,9 +23,11 @@ Model::Model() { }
  */
 Model::Model(const char * objPath)
 {
-	Mode = NO_TEXTURE;
+	LightingOn = true;
+	TextureOn = false;
+	EnvironmentOn = false;
 
-	Lighting = true;
+	TextureType = 0;
 
 	if (!LoadObject(objPath)) { cout << "Could not load object file."; }
 }
@@ -66,10 +68,13 @@ void Model::PopulateFaceNormals()
  */
 void Model::PopulateVertexNormals()
 {
+	YMax = 0;
 	// initialize vertex normals to zero
 	for (unsigned int i=0; i<Vertices.size(); i++)
 	{
 		VertexNormals.push_back(Vector(0.0, 0.0, 0.0));
+
+		if (Vertices[i].Y > YMax) { YMax = Vertices[i].Y; }
 	}
 
 	// sum each vertex normal on this face
@@ -214,15 +219,29 @@ bool Model::LoadTexture(const char * path)
 
 	if (ppm == NULL) { return false; }
 
+	// allocate a texture name
 	glGenTextures(1, &Texture);
+	
+	glActiveTextureARB(GL_TEXTURE1_ARB);
+
+	// bind the texture
 	glBindTexture(GL_TEXTURE_2D, Texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, ppm);
+	
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_GEN_S);
+	glEnable(GL_TEXTURE_GEN_T);
+
+	// set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, ppm);
+
 
     return true;
 }
@@ -240,22 +259,42 @@ bool Model::LoadEnvironment(const char * path)
 
 	if (ppm == NULL) { return false; }
 
+
+	// allocate a texture name
 	glGenTextures(1, &Environment);
+
+	glActiveTextureARB(GL_TEXTURE0_ARB);
+
+	// bind the texture
 	glBindTexture(GL_TEXTURE_2D, Environment);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, ppm);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, ppm);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_GEN_S);
+	glEnable(GL_TEXTURE_GEN_T);
+
+	// select modulate to mix texture with color for shading
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	
+	// set texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+
+
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, ppm);
+
 
     return true;
 }
 
 
+bool Model::LoadBoth(const char * texturePath, const char * environmentPath)
+{
+
+
+    return true;
+}

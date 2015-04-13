@@ -20,6 +20,7 @@ using namespace std;
 Model teapot;
 Camera cam;
 
+
 /*
  * Initialize
  *     Inputs: None.
@@ -32,6 +33,8 @@ void Initialize()
 
     teapot = Model(objPath);
     cam = Camera();
+
+    glShadeModel(GL_SMOOTH);
 
     // blue background
     glClearColor(0.5, 0.5, 1.0, 0.0);
@@ -117,10 +120,10 @@ void DrawTeapot()
 			{
 				GetVertexCoordsAndNormals(point, currFace, x, y, z, xn, yn, zn);
 				glNormal3d(xn, yn, zn);
-				if (teapot.Mode == TEXTURE || teapot.Mode == ENVIRONMENT || teapot.Mode == BOTH)
+				if (teapot.Mode == TEXTURE)
 				{
 					float theta = atan2(z, x);
-					glTexCoord2f((theta + PI)/(2*PI), y/2.0);
+					glTexCoord2f((theta + PI)/(2*PI), y/teapot.YMax);
 				}
 				glVertex3d(x, y, z);
 			}
@@ -133,7 +136,7 @@ void DrawTeapot()
 
 void Lights()
 {
-    if (teapot.Mode == TEXTURE || teapot.Mode == ENVIRONMENT || teapot.Mode == BOTH)
+    if (teapot.Mode == TEXTURE)
 	{
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_TEXTURE_GEN_S);
@@ -144,20 +147,31 @@ void Lights()
 		glDisable(GL_TEXTURE_2D);
 	}
 
-	if (teapot.Lighting == true)
+	if (teapot.LightingOn == true)
 	{
+	
 		// lighting and shadows
 		GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat lpos[] = { 10.0, 0.0, 10.0, 0.0 };
+		GLfloat white_env[] = { 3.0, 3.0, 3.0, 3.0 };
 
+
+		GLfloat lpos[] = { 0.0, 0.0, 3.0, 0.0 };
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
-
 		glLightfv(GL_LIGHT0, GL_POSITION, lpos);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, white);
+
+		if (teapot.EnvironmentOn == true)
+		{
+		glLightfv(GL_LIGHT0, GL_AMBIENT, white_env);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, white_env);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, white_env);		
+		}
+		else
+		{
+					glLightfv(GL_LIGHT0, GL_AMBIENT, white);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
 		glLightfv(GL_LIGHT0, GL_SPECULAR, white);
-	
+		}
 	}
 	else
 	{
@@ -228,18 +242,58 @@ void Keyboard(unsigned char key, int x, int y)
 		// move backwards along z-axis
 		case 'q': cam.Translate.Z -= 0.25; break;
 		// toggle lighting
-		case 'l': teapot.Lighting = !teapot.Lighting; break;
+		case 'l': teapot.LightingOn = !teapot.LightingOn; break;
 		// set no texture mode
-		case '1': teapot.Mode = NO_TEXTURE; break;
+		case '1':
+			teapot.Mode = NO_TEXTURE;
+			teapot.TextureOn = false;
+			teapot.EnvironmentOn = false;
+			glDeleteTextures(1, &teapot.Texture);
+			glDeleteTextures(1, &teapot.Environment);
+			break;
 		// set texture mode, also iterates through availble textures
 		case '2': 
 			teapot.Mode = TEXTURE;
-			teapot.LoadTexture("textures/wood.ppm"); 
+			teapot.TextureOn = true;
+			teapot.EnvironmentOn = false;
+			glDeleteTextures(1, &teapot.Texture);
+			glDeleteTextures(1, &teapot.Environment);	
+			switch(teapot.TextureType)
+			{
+				case WOOD: teapot.LoadTexture("textures/wood.ppm"); break;
+				case GOLD: teapot.LoadTexture("textures/gold.ppm"); break;
+				case METAL: teapot.LoadTexture("textures/metal.ppm"); break;
+			}
 			break;
 		// set environment mode
 		case '3': 
-			teapot.Mode = ENVIRONMENT;
+			teapot.Mode = TEXTURE;
+			teapot.TextureOn = true;
+			teapot.EnvironmentOn = true;
+			glDeleteTextures(1, &teapot.Texture);
+			glDeleteTextures(1, &teapot.Environment);	
+			switch(teapot.TextureType)
+			{
+				case WOOD: teapot.LoadTexture("textures/wood.ppm"); break;
+				case GOLD: teapot.LoadTexture("textures/gold.ppm"); break;
+				case METAL: teapot.LoadTexture("textures/metal.ppm"); break;
+			}
 			teapot.LoadEnvironment("textures/environment.ppm");
+			break;
+		case 32:
+			teapot.TextureType = (teapot.TextureType + 1) % NUM_TEXTURES; 
+			glDeleteTextures(1, &teapot.Texture);
+			glDeleteTextures(1, &teapot.Environment);	
+			if (teapot.TextureOn == true)
+			{
+				switch(teapot.TextureType)
+				{
+					case WOOD: teapot.LoadTexture("textures/wood.ppm"); break;
+					case GOLD: teapot.LoadTexture("textures/gold.ppm"); break;
+					case METAL: teapot.LoadTexture("textures/metal.ppm"); break;
+				}
+			}
+			if (teapot.EnvironmentOn == true) {	teapot.LoadEnvironment("textures/environment.ppm"); }
 			break;
 		// exit
 		case 27: exit(0);

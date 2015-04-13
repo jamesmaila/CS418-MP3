@@ -9,8 +9,13 @@
 
 #define NO_TEXTURE 0
 #define TEXTURE 1
-#define ENVIRONMENT 2
-#define BOTH 3
+
+#define GOLD 0
+#define METAL 1
+#define WOOD 2
+
+#define NUM_TEXTURES 3
+
 
 class Model
 {
@@ -20,13 +25,19 @@ class Model
     	std::vector<Face> Faces;
     	std::vector<Vector> VertexNormals;
     	std::vector<Vector> FaceNormals;
+        
     	GLuint Texture;
     	GLuint Environment;
 
-   		int Mode;
-   		int TextureType;
-        int EnvironmentType;
-        bool Lighting;
+        float YMax;
+
+        int Mode;
+
+        int TextureType;
+
+        bool LightingOn;
+        bool TextureOn;
+        bool EnvironmentOn;
 
     	Model();
         Model(const char * objPath);
@@ -34,6 +45,7 @@ class Model
         unsigned char * ReadPPM(const char * path, int * width, int * height);
         bool LoadTexture(const char * path);
 		bool LoadEnvironment(const char * path);
+        bool LoadBoth(const char * texturePath, const char * environmentPath);
 
         void PopulateFaceNormals();
         void PopulateVertexNormals();
