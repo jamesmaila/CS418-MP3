@@ -151,11 +151,11 @@ void Lights()
 	{
 	
 		// lighting and shadows
-		GLfloat white[] = { 1.0, 1.0, 1.0, 1.0 };
-		GLfloat white_env[] = { 3.0, 3.0, 3.0, 3.0 };
+		GLfloat white[] = { 1.5, 1.5, 1.5, 1.5 };
+		GLfloat white_env[] = { 4.0, 4.0, 4.0, 4.0 };
 
 
-		GLfloat lpos[] = { 0.0, 0.0, 3.0, 0.0 };
+		GLfloat lpos[] = { 2.0, 0.0, 2.0, 0.0 };
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 		glLightfv(GL_LIGHT0, GL_POSITION, lpos);
@@ -168,9 +168,9 @@ void Lights()
 		}
 		else
 		{
-					glLightfv(GL_LIGHT0, GL_AMBIENT, white);
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+			glLightfv(GL_LIGHT0, GL_AMBIENT, white);
+			glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+			glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 		}
 	}
 	else
