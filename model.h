@@ -45,7 +45,6 @@ class Model
         unsigned char * ReadPPM(const char * path, int * width, int * height);
         bool LoadTexture(const char * path);
 		bool LoadEnvironment(const char * path);
-        bool LoadBoth(const char * texturePath, const char * environmentPath);
 
         void PopulateFaceNormals();
         void PopulateVertexNormals();

@@ -219,19 +219,15 @@ bool Model::LoadTexture(const char * path)
 
 	if (ppm == NULL) { return false; }
 
-	// allocate a texture name
 	glGenTextures(1, &Texture);
-	
 	glActiveTextureARB(GL_TEXTURE1_ARB);
 
-	// bind the texture
 	glBindTexture(GL_TEXTURE_2D, Texture);
 	
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_GEN_S);
 	glEnable(GL_TEXTURE_GEN_T);
 
-	// set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -241,7 +237,6 @@ bool Model::LoadTexture(const char * path)
 	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, ppm);
-
 
     return true;
 }
@@ -259,23 +254,17 @@ bool Model::LoadEnvironment(const char * path)
 
 	if (ppm == NULL) { return false; }
 
-
-	// allocate a texture name
 	glGenTextures(1, &Environment);
-
 	glActiveTextureARB(GL_TEXTURE0_ARB);
 
-	// bind the texture
 	glBindTexture(GL_TEXTURE_2D, Environment);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_GEN_S);
 	glEnable(GL_TEXTURE_GEN_T);
 
-	// select modulate to mix texture with color for shading
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	
-	// set texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -284,17 +273,7 @@ bool Model::LoadEnvironment(const char * path)
 	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 
-
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, ppm);
-
-
-    return true;
-}
-
-
-bool Model::LoadBoth(const char * texturePath, const char * environmentPath)
-{
-
 
     return true;
 }
